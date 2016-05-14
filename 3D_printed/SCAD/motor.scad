@@ -1,0 +1,9 @@
+difference(){
+    cube([40,40,2]);
+    translate([20,8,0])cylinder(d=10,h=2);
+    translate([5,8,0])cylinder(d=1.5,h=2);
+    translate([35,4,0])cylinder(d=1.5,h=2);
+}
+translate([0,-4,0])cube([40,4,2]);
+translate([40,-4,0])cube([1,44,10]);
+translate([0,40-1,0])cube([40,1,10]);
