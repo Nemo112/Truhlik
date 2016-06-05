@@ -1,8 +1,10 @@
-#include <Ethernet.h>
+#include <UIPEthernet.h>
+#include <SPI.h>
 #define watering A0
 
 static byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEA, 0x1D, 0xDC };
-static byte ip[] = { 10, 0, 0, 174 };
+//static byte ip[] = { 10, 0, 0, 174 };
+IPAddress ip(10, 0, 0, 174 );
 static byte gateway[] = { 10, 0, 0, 138 };
 static byte subnet[] = { 255, 255, 255, 0};
 
@@ -12,12 +14,15 @@ byte strsa_pnt = 0;
 EthernetServer server(9010);
 
 void setup() {
-  Ethernet.begin(mac, ip);
+  pinMode(2,OUTPUT);
+  Ethernet.begin(mac, ip, gateway, subnet);
   server.begin();
   Serial.begin(9600); 
   while (!Serial) {
     ;
   }
+  Serial.println("Starting up!");
+  Serial.println(Ethernet.localIP());
 }
 
 void loop() {
@@ -52,12 +57,6 @@ void loop() {
             client.print("Watering: ");
             client.print(analogRead(watering));
             client.println("</pre></html>");
-            if(strsa_swch){
-              digitalWrite(8, 0xFFFF); // sending a lot to NPN transistor
-              delay(1000); // wait
-              digitalWrite(8, 0);
-              strsa_swch = false;
-            }
             break;
         }
         if (c == '\n') {
@@ -65,6 +64,12 @@ void loop() {
         }else if (c != '\r') {
           currentLineIsBlank = false;
         }
+            if(strsa_swch){
+              digitalWrite(2, 0xFFFF); // sending a lot to NPN transistor
+              delay(1000); // wait
+              digitalWrite(2, 0);
+              strsa_swch = false;
+            }
       }               
     }
     delay(1);
